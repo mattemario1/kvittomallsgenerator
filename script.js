@@ -9,9 +9,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const cropButton = document.getElementById("cropButton");
     const resetImageButton = document.getElementById("resetImageButton");
 
-    let cropper;
-    let originalImageSrc; // To store the original image source
-    let croppedImageSrc; // To store the cropped image source
+    let croppers = {}; // Object to store cropper instances for each image
+    let originalImageSrcs = {}; // Object to store original image sources for each image
+    let croppedImageSrcs = {}; // Object to store cropped image sources for each image
 
     imageUpload.addEventListener("change", function() {
         const files = this.files;
@@ -37,6 +37,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 removeButton.addEventListener("click", function(event) {
                     event.stopPropagation(); // Prevent the click from triggering the image click event
                     imageList.removeChild(listItem);
+                    const imgSrc = imgElement.src;
+                    delete croppers[imgSrc]; // Remove cropper instance
+                    delete originalImageSrcs[imgSrc]; // Remove original image source
+                    delete croppedImageSrcs[imgSrc]; // Remove cropped image source
                     if (imgElement.classList.contains("selected")) {
                         resetPreview();
                     }
@@ -59,46 +63,63 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     activateCropperButton.addEventListener("click", function() {
-        if (cropper) {
-            cropper.destroy();
-        }
-        cropper = new Cropper(imagePreviewImage, {
-            viewMode: 1, // No aspect ratio constraint
-            ready: function() {
-                // Store the original image source only once when cropper is ready
-                if (!originalImageSrc) {
-                    originalImageSrc = imagePreviewImage.src;
-                }
+        const selectedImage = imageList.querySelector(".image-list__item.selected img");
+        if (selectedImage) {
+            const imgSrc = selectedImage.src;
+
+            if (!croppers[imgSrc]) {
+                croppers[imgSrc] = new Cropper(imagePreviewImage, {
+                    viewMode: 1, // No aspect ratio constraint
+                    ready: function() {
+                        // Store the original image source only once when cropper is ready
+                        if (!originalImageSrcs[imgSrc]) {
+                            originalImageSrcs[imgSrc] = imgSrc;
+                        }
+                    }
+                });
+            } else {
+                croppers[imgSrc].replace(imgSrc);
             }
-        });
-        cropButton.style.display = "inline-block";
-        resetImageButton.style.display = "none"; // Reset button hidden initially
-        activateCropperButton.style.display = "none";
+
+            cropButton.style.display = "inline-block";
+            resetImageButton.style.display = "none"; // Reset button hidden initially
+            activateCropperButton.style.display = "none";
+        }
     });
 
     cropButton.addEventListener("click", function() {
-        if (cropper) {
-            const croppedCanvas = cropper.getCroppedCanvas();
-            croppedImageSrc = croppedCanvas.toDataURL();
-            previewImage(croppedImageSrc);
-            cropper.destroy();
-            cropper = null; // Destroy cropper instance after cropping
-            cropButton.style.display = "none";
-            resetImageButton.style.display = "inline-block"; // Display reset button after cropping
+        const selectedImage = imageList.querySelector(".image-list__item.selected img");
+        if (selectedImage) {
+            const imgSrc = selectedImage.src;
+            if (croppers[imgSrc]) {
+                const croppedCanvas = croppers[imgSrc].getCroppedCanvas();
+                croppedImageSrcs[imgSrc] = croppedCanvas.toDataURL();
+                previewImage(croppedImageSrcs[imgSrc]);
+                croppers[imgSrc].destroy();
+                delete croppers[imgSrc];
+                cropButton.style.display = "none";
+                resetImageButton.style.display = "inline-block"; // Display reset button after cropping
+            }
         }
     });
 
     resetImageButton.addEventListener("click", function() {
-        if (cropper) {
-            cropper.destroy();
-            cropper = null;
+        const selectedImage = imageList.querySelector(".image-list__item.selected img");
+        if (selectedImage) {
+            const imgSrc = selectedImage.src;
+
+            if (croppers[imgSrc]) {
+                croppers[imgSrc].destroy();
+                delete croppers[imgSrc];
+            }
+
+            imagePreviewImage.src = originalImageSrcs[imgSrc];
+            imagePreviewImage.style.width = "auto"; // Reset width to auto
+            imagePreviewImage.style.height = "auto"; // Reset height to auto
+            activateCropperButton.style.display = "inline-block";
+            resetImageButton.style.display = "none";
+            croppedImageSrcs[imgSrc] = null;
         }
-        imagePreviewImage.src = originalImageSrc;
-        imagePreviewImage.style.width = "auto"; // Reset width to auto
-        imagePreviewImage.style.height = "auto"; // Reset height to auto
-        activateCropperButton.style.display = "inline-block";
-        resetImageButton.style.display = "none";
-        croppedImageSrc = null;
     });
 
     function previewImage(src) {
@@ -130,12 +151,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function resetPreview() {
-        if (cropper) {
-            cropper.destroy();
-            cropper = null;
+        if (croppers) {
+            Object.values(croppers).forEach(cropper => cropper.destroy());
+            croppers = {};
         }
-        originalImageSrc = null;
-        croppedImageSrc = null;
+        originalImageSrcs = {};
+        croppedImageSrcs = {};
         imagePreviewImage.setAttribute("src", "");
         imagePreviewDefaultText.style.display = "block";
         imagePreviewImage.style.display = "none";
