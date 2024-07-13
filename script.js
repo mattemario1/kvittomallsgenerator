@@ -14,6 +14,30 @@ document.addEventListener("DOMContentLoaded", function() {
                 imagePreviewImage.setAttribute("src", this.result);
                 imagePreviewDefaultText.style.display = "none";
                 imagePreviewImage.style.display = "block";
+
+                // Create an off-screen image to get the dimensions
+                const img = new Image();
+                img.src = this.result;
+                img.onload = function() {
+                    const maxWidth = 500; // Maximum width
+                    const maxHeight = 500; // Maximum height
+                    let width = img.width;
+                    let height = img.height;
+
+                    // Calculate the new dimensions while maintaining the aspect ratio
+                    if (width > maxWidth) {
+                        height = height * (maxWidth / width);
+                        width = maxWidth;
+                    }
+                    if (height > maxHeight) {
+                        width = width * (maxHeight / height);
+                        height = maxHeight;
+                    }
+
+                    // Set the dimensions of the preview box
+                    imagePreview.style.width = width + 'px';
+                    imagePreview.style.height = height + 'px';
+                }
             });
 
             reader.addEventListener("error", function() {
@@ -26,6 +50,8 @@ document.addEventListener("DOMContentLoaded", function() {
             imagePreviewDefaultText.style.display = null;
             imagePreviewImage.style.display = "none";
             imagePreviewImage.setAttribute("src", "");
+            imagePreview.style.width = 'auto';
+            imagePreview.style.height = 'auto';
         }
     });
 });

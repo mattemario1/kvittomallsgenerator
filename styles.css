@@ -13,23 +13,28 @@ body {
 }
 
 #imageUpload {
-    margin: 20px 0;
+    margin: 10000px 0;
 }
 
 .image-preview {
-    width: 300px;
-    height: 300px;
-    border: 2px solid #dddddd;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     color: #cccccc;
     background-color: white;
+    border: 2px solid #dddddd;
+    max-width: 500px; /* Maximum width */
+    max-height: 500px; /* Maximum height */
+    width: auto;
+    height: auto;
+    margin: 0 auto;
 }
 
 .image-preview__image {
+    display: none;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
 }
