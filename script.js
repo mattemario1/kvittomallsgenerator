@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const imagePreview = document.getElementById("imagePreview");
     const imagePreviewImage = imagePreview.querySelector(".image-preview__image");
     const imagePreviewDefaultText = imagePreview.querySelector(".image-preview__default-text");
+    const clearAllButton = document.getElementById("clearAllButton");
 
     imageUpload.addEventListener("change", function() {
         const files = this.files;
@@ -43,6 +44,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
             reader.readAsDataURL(file);
         });
+    });
+
+    clearAllButton.addEventListener("click", function() {
+        imageList.innerHTML = "";
+        resetPreview();
     });
 
     function previewImage(src) {

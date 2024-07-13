@@ -16,6 +16,19 @@ body {
     margin: 20px 0;
 }
 
+.clear-all-button {
+    margin-bottom: 20px;
+    padding: 6px 10px;
+    background-color: #cb211bd5;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.clear-all-button:hover {
+    background-color: #cc0000;
+}
+
 .image-list {
     display: flex;
     flex-wrap: wrap;
