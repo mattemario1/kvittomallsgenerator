@@ -204,24 +204,32 @@ document.addEventListener("DOMContentLoaded", function() {
         const totalImages = Object.keys(originalImageSrcs).length;
     
         Object.keys(originalImageSrcs).forEach((key, index) => {
-            // Directly use the original or cropped image source
             const imgSrc = croppedImageSrcs[key] ? croppedImageSrcs[key] : originalImageSrcs[key];
-    
             console.log("Adding image to PDF:", imgSrc); // Debugging log
-
-            // Load the image to ensure it's ready before adding to PDF
+    
             const img = new Image();
+            img.crossOrigin = "Anonymous"; // Use this if images are from a different origin
             img.src = imgSrc;
             img.onload = function() {
+                // Create a canvas to convert image to data URL
+                const canvas = document.createElement("canvas");
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0);
+    
+                // Convert canvas to PNG data URL
+                const dataURL = canvas.toDataURL("image/png");
+    
                 // Add a new page for every image after the first
                 if (index > 0) {
                     doc.addPage();
                 }
-                // Add image to PDF; adjust the position and size as needed
-                doc.addImage(imgSrc, 'PNG', 10, 10, 180, 160);
+    
+                // Use the data URL for the image
+                doc.addImage(dataURL, 'PNG', 10, 10, 180, 160);
     
                 imagesProcessed++;
-                // Save the PDF after processing the last image
                 if (imagesProcessed === totalImages) {
                     doc.save('images.pdf');
                 }
