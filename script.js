@@ -217,18 +217,45 @@ document.addEventListener("DOMContentLoaded", function() {
                 canvas.height = img.height;
                 const ctx = canvas.getContext("2d");
                 ctx.drawImage(img, 0, 0);
-    
+                
                 // Convert canvas to PNG data URL
                 const dataURL = canvas.toDataURL("image/png");
-    
+                
+                // Calculate aspect ratio of the image
+                const aspectRatio = img.width / img.height;
+                
+                // Define maximum dimensions considering page size and margins
+                const pageWidth = 210 - 40; // A4 width - margins
+                const pageHeight = 297 - 40; // A4 height - margins
+                let newWidth, newHeight;
+                
+                // Scale image to fit within the maximum dimensions while maintaining aspect ratio
+                if (aspectRatio > 1) { // Landscape orientation
+                    newWidth = Math.min(img.width, pageWidth);
+                    newHeight = newWidth / aspectRatio;
+                } else { // Portrait orientation
+                    newHeight = Math.min(img.height, pageHeight);
+                    newWidth = newHeight * aspectRatio;
+                }
+                
+                // Check if scaled dimensions are still too large for the page
+                if (newHeight > pageHeight) {
+                    newHeight = pageHeight;
+                    newWidth = newHeight * aspectRatio;
+                }
+                
+                // Calculate positions to center the image
+                const xPos = (pageWidth - newWidth) / 2 + 20; // Add margin to x position
+                const yPos = (pageHeight - newHeight) / 2 + 20; // Add margin to y position
+                
                 // Add a new page for every image after the first
                 if (index > 0) {
                     doc.addPage();
                 }
-    
-                // Use the data URL for the image
-                doc.addImage(dataURL, 'PNG', 10, 10, 180, 160);
-    
+                
+                // Use the data URL for the image, with adjusted dimensions to maintain aspect ratio
+                doc.addImage(dataURL, 'PNG', xPos, yPos, newWidth, newHeight);
+                
                 imagesProcessed++;
                 if (imagesProcessed === totalImages) {
                     doc.save('images.pdf');
