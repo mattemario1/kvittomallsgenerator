@@ -3,33 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Receipt to PDF</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-    <style>
-        #canvas, #photo {
-            display: none;
-        }
-        .img-container {
-            display: none;
-            text-align: center;
-        }
-        .img-container img {
-            max-width: 100%;
-        }
-    </style>
+    <title>Image Upload and Display</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Upload or Capture Receipt</h1>
-    <input type="file" id="upload" accept="image/*">
-    <video id="video" width="320" height="240" autoplay></video>
-    <button id="capture">Capture</button>
-    <div class="img-container">
-        <img id="photo" alt="Captured Image">
+    <div class="container">
+        <h1>Upload and Display Image</h1>
+        <input type="file" id="imageUpload" accept="image/*">
+        <div class="image-preview" id="imagePreview">
+            <img src="" alt="Image Preview" class="image-preview__image" style="display: none;">
+            <span class="image-preview__default-text">Image Preview</span>
+        </div>
     </div>
-    <button id="cropButton">Crop</button>
-    <button id="generatePdf">Generate PDF</button>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
