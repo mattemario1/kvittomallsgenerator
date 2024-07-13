@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let croppers = {}; // Object to store cropper instances for each image
     let originalImageSrcs = {}; // Object to store original image sources for each image
     let croppedImageSrcs = {}; // Object to store cropped image sources for each image
+    let croppedImagesStatus = {}; // Object to store the status of cropped images for each image
 
     imageUpload.addEventListener("change", function() {
         const files = this.files;
@@ -28,7 +29,14 @@ document.addEventListener("DOMContentLoaded", function() {
                         item.classList.remove("selected");
                     });
                     this.classList.add("selected");
-                    previewImage(this.src);
+                    // Check if a cropped version exists, and display it
+                    const imgSrc = this.src;
+                    if (croppedImageSrcs[imgSrc]) {
+                        previewImage(croppedImageSrcs[imgSrc]); // Display cropped image
+                    } else {
+                        previewImage(imgSrc); // Display original image
+                    }
+                    checkAndToggleResetButton(this.src); // Check and toggle reset button based on the selected image
                 });
 
                 const removeButton = document.createElement("button");
@@ -63,7 +71,8 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     activateCropperButton.addEventListener("click", function() {
-        const selectedImage = imageList.querySelector(".image-list__item.selected img");
+        const selectedImage = imageList.querySelector("img.selected");
+        console.log(selectedImage);
         if (selectedImage) {
             const imgSrc = selectedImage.src;
 
@@ -88,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     cropButton.addEventListener("click", function() {
-        const selectedImage = imageList.querySelector(".image-list__item.selected img");
+        const selectedImage = imageList.querySelector("img.selected");
         if (selectedImage) {
             const imgSrc = selectedImage.src;
             if (croppers[imgSrc]) {
@@ -98,13 +107,22 @@ document.addEventListener("DOMContentLoaded", function() {
                 croppers[imgSrc].destroy();
                 delete croppers[imgSrc];
                 cropButton.style.display = "none";
-                resetImageButton.style.display = "inline-block"; // Display reset button after cropping
+                croppedImagesStatus[imgSrc] = true; // Show button if image is cropped
+                checkAndToggleResetButton(imgSrc); // Hide button if image is not cropped
             }
         }
     });
 
+    function checkAndToggleResetButton(imageSrc) {
+        if (croppedImagesStatus[imageSrc]) {
+            resetImageButton.style.display = 'block'; // Show button if image is cropped
+        } else {
+            resetImageButton.style.display = 'none'; // Hide button if image is not cropped
+        }
+    }
+
     resetImageButton.addEventListener("click", function() {
-        const selectedImage = imageList.querySelector(".image-list__item.selected img");
+        const selectedImage = imageList.querySelector("img.selected");
         if (selectedImage) {
             const imgSrc = selectedImage.src;
 
@@ -119,6 +137,8 @@ document.addEventListener("DOMContentLoaded", function() {
             activateCropperButton.style.display = "inline-block";
             resetImageButton.style.display = "none";
             croppedImageSrcs[imgSrc] = null;
+            croppedImagesStatus[imgSrc] = false; // Mark the image as not cropped
+            checkAndToggleResetButton(imgSrc); // Update the reset button visibility
         }
     });
 
