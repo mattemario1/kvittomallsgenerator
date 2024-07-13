@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const activateCropperButton = document.getElementById("activateCropperButton");
     const cropButton = document.getElementById("cropButton");
     const resetImageButton = document.getElementById("resetImageButton");
+    const createPdfButton = document.getElementById("createPdfButton");
 
     let croppers = {}; // Object to store cropper instances for each image
     let originalImageSrcs = {}; // Object to store original image sources for each image
@@ -24,6 +25,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 const imgElement = document.createElement("img");
                 imgElement.src = this.result;
                 imgElement.classList.add("image-list__item");
+
+                // Add the loaded image source to originalImageSrcs
+                originalImageSrcs[this.result] = imgElement.src; // Or true, if you just want to mark it as added
+
+
                 imgElement.addEventListener("click", function() {
                     Array.from(imageList.getElementsByClassName("image-list__item")).forEach(item => {
                         item.classList.remove("selected");
@@ -186,4 +192,45 @@ document.addEventListener("DOMContentLoaded", function() {
         resetImageButton.style.display = "none";
         activateCropperButton.style.display = "none";
     }
+
+    createPdfButton.addEventListener("click", function() {
+        createPdfFromImages();
+    });
+
+    // Function to create a PDF from images
+    function createPdfFromImages() {
+        const doc = new jspdf.jsPDF();
+        let imagesProcessed = 0;
+        const totalImages = Object.keys(originalImageSrcs).length;
+    
+        Object.keys(originalImageSrcs).forEach((key, index) => {
+            // Directly use the original or cropped image source
+            const imgSrc = croppedImageSrcs[key] ? croppedImageSrcs[key] : originalImageSrcs[key];
+    
+            console.log("Adding image to PDF:", imgSrc); // Debugging log
+
+            // Load the image to ensure it's ready before adding to PDF
+            const img = new Image();
+            img.src = imgSrc;
+            img.onload = function() {
+                // Add a new page for every image after the first
+                if (index > 0) {
+                    doc.addPage();
+                }
+                // Add image to PDF; adjust the position and size as needed
+                doc.addImage(imgSrc, 'PNG', 10, 10, 180, 160);
+    
+                imagesProcessed++;
+                // Save the PDF after processing the last image
+                if (imagesProcessed === totalImages) {
+                    doc.save('images.pdf');
+                }
+            };
+        });
+    
+        if(totalImages === 0) { // If no images are present, just save an empty PDF
+            doc.save('images.pdf');
+        }
+    }
+
 });

@@ -107,3 +107,16 @@ body {
 .reset-image-button:hover {
     background-color: #ec971f;
 }
+
+.create-pdf-button {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background-color: #5cb85c; /* Green color to differentiate from the reset button */
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.create-pdf-button:hover {
+    background-color: #4cae4c; /* Darker green on hover */
+}
