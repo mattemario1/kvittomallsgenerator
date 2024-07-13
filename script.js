@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     imageUpload.addEventListener("change", function() {
         const files = this.files;
-        imageList.innerHTML = ""; // Clear the previous image list
 
         Array.from(files).forEach(file => {
             const reader = new FileReader();
@@ -24,9 +23,21 @@ document.addEventListener("DOMContentLoaded", function() {
                     previewImage(this.src);
                 });
 
+                const removeButton = document.createElement("button");
+                removeButton.innerText = "x";
+                removeButton.classList.add("remove-button");
+                removeButton.addEventListener("click", function(event) {
+                    event.stopPropagation(); // Prevent the click from triggering the image click event
+                    imageList.removeChild(listItem);
+                    if (imgElement.classList.contains("selected")) {
+                        resetPreview();
+                    }
+                });
+
                 const listItem = document.createElement("div");
                 listItem.classList.add("image-list__item");
                 listItem.appendChild(imgElement);
+                listItem.appendChild(removeButton);
                 imageList.appendChild(listItem);
             });
 
@@ -59,5 +70,13 @@ document.addEventListener("DOMContentLoaded", function() {
             imagePreview.style.width = width + 'px';
             imagePreview.style.height = height + 'px';
         }
+    }
+
+    function resetPreview() {
+        imagePreviewImage.setAttribute("src", "");
+        imagePreviewDefaultText.style.display = "block";
+        imagePreviewImage.style.display = "none";
+        imagePreview.style.width = "auto";
+        imagePreview.style.height = "auto";
     }
 });

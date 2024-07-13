@@ -24,6 +24,7 @@ body {
 }
 
 .image-list__item {
+    position: relative;
     margin: 5px;
     cursor: pointer;
 }
@@ -36,6 +37,20 @@ body {
 
 .image-list__item img.selected {
     border-color: #007bff;
+}
+
+.remove-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: red;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
 }
 
 .image-preview {
