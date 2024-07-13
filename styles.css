@@ -1,19 +1,41 @@
 body {
     font-family: Arial, sans-serif;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    height: 100vh;
     margin: 0;
     background-color: #f4f4f4;
 }
 
 .container {
     text-align: center;
+    margin-top: 20px;
 }
 
 #imageUpload {
-    margin: 10000px 0;
+    margin: 20px 0;
+}
+
+.image-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.image-list__item {
+    margin: 5px;
+    cursor: pointer;
+}
+
+.image-list__item img {
+    max-width: 100px;
+    max-height: 100px;
+    border: 2px solid transparent;
+}
+
+.image-list__item img.selected {
+    border-color: #007bff;
 }
 
 .image-preview {
@@ -24,11 +46,10 @@ body {
     color: #cccccc;
     background-color: white;
     border: 2px solid #dddddd;
-    max-width: 500px; /* Maximum width */
-    max-height: 500px; /* Maximum height */
+    max-width: 500px;
+    max-height: 500px;
     width: auto;
     height: auto;
-    margin: 0 auto;
 }
 
 .image-preview__image {

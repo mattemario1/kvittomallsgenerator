@@ -1,57 +1,63 @@
 document.addEventListener("DOMContentLoaded", function() {
     const imageUpload = document.getElementById("imageUpload");
+    const imageList = document.getElementById("imageList");
     const imagePreview = document.getElementById("imagePreview");
     const imagePreviewImage = imagePreview.querySelector(".image-preview__image");
     const imagePreviewDefaultText = imagePreview.querySelector(".image-preview__default-text");
 
     imageUpload.addEventListener("change", function() {
-        const file = this.files[0];
+        const files = this.files;
+        imageList.innerHTML = ""; // Clear the previous image list
 
-        if (file) {
+        Array.from(files).forEach(file => {
             const reader = new FileReader();
 
             reader.addEventListener("load", function() {
-                imagePreviewImage.setAttribute("src", this.result);
-                imagePreviewDefaultText.style.display = "none";
-                imagePreviewImage.style.display = "block";
+                const imgElement = document.createElement("img");
+                imgElement.src = this.result;
+                imgElement.classList.add("image-list__item");
+                imgElement.addEventListener("click", function() {
+                    Array.from(imageList.getElementsByClassName("image-list__item")).forEach(item => {
+                        item.classList.remove("selected");
+                    });
+                    this.classList.add("selected");
+                    previewImage(this.src);
+                });
 
-                // Create an off-screen image to get the dimensions
-                const img = new Image();
-                img.src = this.result;
-                img.onload = function() {
-                    const maxWidth = 500; // Maximum width
-                    const maxHeight = 500; // Maximum height
-                    let width = img.width;
-                    let height = img.height;
-
-                    // Calculate the new dimensions while maintaining the aspect ratio
-                    if (width > maxWidth) {
-                        height = height * (maxWidth / width);
-                        width = maxWidth;
-                    }
-                    if (height > maxHeight) {
-                        width = width * (maxHeight / height);
-                        height = maxHeight;
-                    }
-
-                    // Set the dimensions of the preview box
-                    imagePreview.style.width = width + 'px';
-                    imagePreview.style.height = height + 'px';
-                }
-            });
-
-            reader.addEventListener("error", function() {
-                console.error("Error reading file:", reader.error);
-                imagePreviewDefaultText.textContent = "Failed to load image.";
+                const listItem = document.createElement("div");
+                listItem.classList.add("image-list__item");
+                listItem.appendChild(imgElement);
+                imageList.appendChild(listItem);
             });
 
             reader.readAsDataURL(file);
-        } else {
-            imagePreviewDefaultText.style.display = null;
-            imagePreviewImage.style.display = "none";
-            imagePreviewImage.setAttribute("src", "");
-            imagePreview.style.width = 'auto';
-            imagePreview.style.height = 'auto';
-        }
+        });
     });
+
+    function previewImage(src) {
+        imagePreviewImage.setAttribute("src", src);
+        imagePreviewDefaultText.style.display = "none";
+        imagePreviewImage.style.display = "block";
+
+        const img = new Image();
+        img.src = src;
+        img.onload = function() {
+            const maxWidth = 500; // Maximum width
+            const maxHeight = 500; // Maximum height
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxWidth) {
+                height = height * (maxWidth / width);
+                width = maxWidth;
+            }
+            if (height > maxHeight) {
+                width = width * (maxHeight / height);
+                height = maxHeight;
+            }
+
+            imagePreview.style.width = width + 'px';
+            imagePreview.style.height = height + 'px';
+        }
+    }
 });
