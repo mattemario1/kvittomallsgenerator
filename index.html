@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multiple Image Upload and Display</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.css">
 </head>
 <body>
     <div class="container">
@@ -16,7 +17,10 @@
             <img src="" alt="Image Preview" class="image-preview__image">
             <span class="image-preview__default-text">Image Preview</span>
         </div>
+        <button id="activateCropperButton" class="activate-cropper-button" style="display: none;">Activate Cropper</button>
+        <button id="cropButton" class="crop-button" style="display: none;">Crop Image</button>
     </div>
+    <script src="https://unpkg.com/cropperjs"></script>
     <script src="script.js"></script>
 </body>
 </html>

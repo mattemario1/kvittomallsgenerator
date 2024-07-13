@@ -5,6 +5,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const imagePreviewImage = imagePreview.querySelector(".image-preview__image");
     const imagePreviewDefaultText = imagePreview.querySelector(".image-preview__default-text");
     const clearAllButton = document.getElementById("clearAllButton");
+    const activateCropperButton = document.getElementById("activateCropperButton");
+    const cropButton = document.getElementById("cropButton");
+
+    let cropper;
 
     imageUpload.addEventListener("change", function() {
         const files = this.files;
@@ -51,6 +55,31 @@ document.addEventListener("DOMContentLoaded", function() {
         resetPreview();
     });
 
+    activateCropperButton.addEventListener("click", function() {
+        if (cropper) {
+            cropper.destroy();
+        }
+        cropper = new Cropper(imagePreviewImage, {
+            viewMode: 1 // No aspect ratio constraint
+        });
+        cropButton.style.display = "inline-block";
+        activateCropperButton.style.display = "none";
+    });
+
+    cropButton.addEventListener("click", function() {
+        const croppedCanvas = cropper.getCroppedCanvas();
+        const croppedImageSrc = croppedCanvas.toDataURL();
+        previewImage(croppedImageSrc);
+        cropper.destroy();
+        cropButton.style.display = "none";
+        activateCropperButton.style.display = "none";
+
+        const selectedImgElement = imageList.querySelector(".image-list__item img.selected");
+        if (selectedImgElement) {
+            selectedImgElement.src = croppedImageSrc;
+        }
+    });
+
     function previewImage(src) {
         imagePreviewImage.setAttribute("src", src);
         imagePreviewDefaultText.style.display = "none";
@@ -75,14 +104,21 @@ document.addEventListener("DOMContentLoaded", function() {
 
             imagePreview.style.width = width + 'px';
             imagePreview.style.height = height + 'px';
+            activateCropperButton.style.display = "inline-block";
         }
     }
 
     function resetPreview() {
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
         imagePreviewImage.setAttribute("src", "");
         imagePreviewDefaultText.style.display = "block";
         imagePreviewImage.style.display = "none";
         imagePreview.style.width = "auto";
         imagePreview.style.height = "auto";
+        cropButton.style.display = "none";
+        activateCropperButton.style.display = "none";
     }
 });

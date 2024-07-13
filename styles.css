@@ -16,16 +16,16 @@ body {
     margin: 20px 0;
 }
 
-.clear-all-button {
+.clear-all-button, .activate-cropper-button, .crop-button {
     margin-bottom: 20px;
-    padding: 6px 10px;
-    background-color: #cb211bd5;
+    padding: 10px 20px;
+    background-color: #ff0000;
     color: white;
     border: none;
     cursor: pointer;
 }
 
-.clear-all-button:hover {
+.clear-all-button:hover, .activate-cropper-button:hover, .crop-button:hover {
     background-color: #cc0000;
 }
 
