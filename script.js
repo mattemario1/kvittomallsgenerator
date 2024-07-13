@@ -7,8 +7,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const clearAllButton = document.getElementById("clearAllButton");
     const activateCropperButton = document.getElementById("activateCropperButton");
     const cropButton = document.getElementById("cropButton");
+    const resetImageButton = document.getElementById("resetImageButton");
 
     let cropper;
+    let originalImageSrc; // To store the original image source
+    let croppedImageSrc; // To store the cropped image source
 
     imageUpload.addEventListener("change", function() {
         const files = this.files;
@@ -60,24 +63,42 @@ document.addEventListener("DOMContentLoaded", function() {
             cropper.destroy();
         }
         cropper = new Cropper(imagePreviewImage, {
-            viewMode: 1 // No aspect ratio constraint
+            viewMode: 1, // No aspect ratio constraint
+            ready: function() {
+                // Store the original image source only once when cropper is ready
+                if (!originalImageSrc) {
+                    originalImageSrc = imagePreviewImage.src;
+                }
+            }
         });
         cropButton.style.display = "inline-block";
+        resetImageButton.style.display = "none"; // Reset button hidden initially
         activateCropperButton.style.display = "none";
     });
 
     cropButton.addEventListener("click", function() {
-        const croppedCanvas = cropper.getCroppedCanvas();
-        const croppedImageSrc = croppedCanvas.toDataURL();
-        previewImage(croppedImageSrc);
-        cropper.destroy();
-        cropButton.style.display = "none";
-        activateCropperButton.style.display = "none";
-
-        const selectedImgElement = imageList.querySelector(".image-list__item img.selected");
-        if (selectedImgElement) {
-            selectedImgElement.src = croppedImageSrc;
+        if (cropper) {
+            const croppedCanvas = cropper.getCroppedCanvas();
+            croppedImageSrc = croppedCanvas.toDataURL();
+            previewImage(croppedImageSrc);
+            cropper.destroy();
+            cropper = null; // Destroy cropper instance after cropping
+            cropButton.style.display = "none";
+            resetImageButton.style.display = "inline-block"; // Display reset button after cropping
         }
+    });
+
+    resetImageButton.addEventListener("click", function() {
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+        imagePreviewImage.src = originalImageSrc;
+        imagePreviewImage.style.width = "auto"; // Reset width to auto
+        imagePreviewImage.style.height = "auto"; // Reset height to auto
+        activateCropperButton.style.display = "inline-block";
+        resetImageButton.style.display = "none";
+        croppedImageSrc = null;
     });
 
     function previewImage(src) {
@@ -102,8 +123,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 height = maxHeight;
             }
 
-            imagePreview.style.width = width + 'px';
-            imagePreview.style.height = height + 'px';
+            imagePreviewImage.style.width = width + 'px';
+            imagePreviewImage.style.height = height + 'px';
             activateCropperButton.style.display = "inline-block";
         }
     }
@@ -113,12 +134,15 @@ document.addEventListener("DOMContentLoaded", function() {
             cropper.destroy();
             cropper = null;
         }
+        originalImageSrc = null;
+        croppedImageSrc = null;
         imagePreviewImage.setAttribute("src", "");
         imagePreviewDefaultText.style.display = "block";
         imagePreviewImage.style.display = "none";
-        imagePreview.style.width = "auto";
-        imagePreview.style.height = "auto";
+        imagePreviewImage.style.width = "auto"; // Reset width to auto
+        imagePreviewImage.style.height = "auto"; // Reset height to auto
         cropButton.style.display = "none";
+        resetImageButton.style.display = "none";
         activateCropperButton.style.display = "none";
     }
 });
