@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const cropButton = document.getElementById("cropButton");
     const resetImageButton = document.getElementById("resetImageButton");
     const createPdfButton = document.getElementById("createPdfButton");
+    const myForm = document.getElementById("myForm");
 
     let croppers = {}; // Object to store cropper instances for each image
     let originalImageSrcs = {}; // Object to store original image sources for each image
@@ -194,8 +195,55 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     createPdfButton.addEventListener("click", function() {
-        createPdfFromImages();
+        pdfDoc = insertTextIntoFirstPagePdf(textItems);
+        createPdfWithFirstPageAndImages(pdfDoc);
     });
+
+
+    // Assuming getTextBoxes() returns an array of text items to insert
+    async function insertTextIntoFirstPagePdf(textItems) {
+         // Load the existing PDF
+        const existingPdfBytes = await fetch('Kvittomall_LiTHeBlås.pdf').then(res => res.arrayBuffer());
+
+        // Load a PDFDocument from the existing PDF bytes
+        const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+        const pages = pdfDoc.getPages();
+        const firstPage = pages[0];
+
+        const form = pdfDoc.getForm();
+
+        // Get all form fields in the PDF
+        const fields = form.getFields();
+
+        // Log the names of all form fields
+        fields.forEach(field => {
+            console.log(field.getName());
+        });
+
+        console.log(textItems); // Debugging log
+    
+        const nameField = form.getTextField('Textf#C3#A4lt 1');
+        const informationField = form.getTextField('Textf#C3#A4lt 2');
+        const krField = form.getTextField('Valutaf#C3#A4lt 1');
+        const dateField = form.getTextField('Datumf#C3#A4lt 1');
+        const bankNrField = form.getTextField('Textf#C3#A4lt 4');
+        const clearingNrField = form.getTextField('Textf#C3#A4lt 4_2');
+        const bankNameField = form.getTextField('Textf#C3#A4lt 4_3');
+
+
+        nameField.setText(document.getElementById("firstName").value + ' ' + document.getElementById("surName").value);
+        informationField.setText(document.getElementById("expenseInfo").value);
+        krField.setText(document.getElementById("amount").value);
+        dateField.setText(document.getElementById("date").value);
+        bankNrField.setText(document.getElementById("accountNumber").value);
+        clearingNrField.setText(document.getElementById("clearingNumber").value);
+        bankNameField.setText(document.getElementById("bank").value);
+        // date2Field.setText('8');
+
+
+        return pdfDoc;
+
+    }
 
     // Function to create a PDF from images
     function createPdfFromImages() {
