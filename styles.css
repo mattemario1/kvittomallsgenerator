@@ -29,30 +29,35 @@ body {
     background-color: #cc0000;
 }
 
-.image-list {
+#receiptList {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px; /* Added gap between items */
-    margin-bottom: 20px;
+    flex-direction: row;
+    align-items: flex-start; /* Align items at the start of the container */
+    flex-wrap: wrap; /* Allow wrapping if there's not enough space */
+    gap: 10px; /* Space between boxes */
 }
 
-.image-list__item {
+.media-box {
     position: relative;
-    cursor: pointer;
-    max-width: 100px; /* Adjusted max-width */
-    max-height: 100px; /* Adjusted max-height */
+    border: 1px solid #ccc; /* Optional: Adds a border around each box */
+    padding: 10px; /* Adds some padding inside the boxes */
+    display: flex; /* Makes sure the content inside each box is also flexibly aligned */
+    flex-direction: column; /* Aligns items vertically inside the box */
+    align-items: center; /* Centers items horizontally */
+    justify-content: center; /* Centers items vertically */
 }
 
-.image-list__item img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border: 2px solid transparent;
-    object-fit: cover; /* Ensures images maintain aspect ratio and cover the container */
+.media-image {
+    max-width: 200px; /* Ensure the image does not exceed the box size */
+    max-height: 200px; /* Ensure the image does not exceed the box size */
+    object-fit: cover; /* Cover the container without losing aspect ratio */
 }
 
-.image-list__item img.selected {
+.selected-box {
+    border: 2px solid blue; /* Example style for selected state */
+}
+
+.media-box img.selected {
     border-color: #007bff;
 }
 

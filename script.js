@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     const imageUpload = document.getElementById("imageUpload");
-    const imageList = document.getElementById("imageList");
+    const receiptList = document.getElementById("receiptList");
     const imagePreview = document.getElementById("imagePreview");
     const imagePreviewImage = imagePreview.querySelector(".image-preview__image");
     const imagePreviewDefaultText = imagePreview.querySelector(".image-preview__default-text");
@@ -16,10 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let croppedImageSrcs = {}; // Object to store cropped image sources for each image
     let croppedImagesStatus = {}; // Object to store the status of cropped images for each image
     let fileTypes = {}; // Object to store file types for each file
-    let pdfFiles = {}; // Object to store PDF files separately
-
-    console.log("HEJ");
-
+    
     imageUpload.addEventListener("change", function() {
         const files = this.files;
 
@@ -27,94 +24,109 @@ document.addEventListener("DOMContentLoaded", function() {
             const reader = new FileReader();
             console.log(file.type);
 
+            
             reader.addEventListener("load", function() {
-
-                // Store the file type
-                fileTypes[this.result] = file.type;
-
-                if (file.type === "application/pdf") {
-                    const listItem = document.createElement("li"); // Create a list item or div
-                    listItem.classList.add("image-list__item", "pdf-item");
-
-                    const pdfText = document.createElement("span"); // Create a span for the PDF text
-                    pdfText.textContent = `PDF: ${file.name}`;
-                    listItem.appendChild(pdfText); // Append the PDF text to the list item
-
-                    originalImageSrcs[this.result] = this.result;
-
-                    const removeButton = document.createElement("button");
-                    removeButton.innerText = "x";
-                    removeButton.classList.add("remove-button");
-                    removeButton.addEventListener("click", function(event) {
-                        event.stopPropagation(); // Prevent the click from triggering the PDF item click event
-                        imageList.removeChild(listItem);
-                        delete originalImageSrcs[pdfText.textContent]; // Adjust this line based on how you're tracking PDF files
-                        // Additional cleanup if necessary
-                    });
-                    listItem.appendChild(removeButton); // Append the remove button to the list item
-
-                    imageList.appendChild(listItem); // Append the list item to the image list
-
-                } else {
-
-                const imgElement = document.createElement("img");
-                imgElement.src = this.result;
-                imgElement.classList.add("image-list__item");
-
-                // Add the loaded image source to originalImageSrcs
-                originalImageSrcs[this.result] = imgElement.src; // Or true, if you just want to mark it as added
                 
-                console.log(imgElement.src); // Debugging log
+                // Create a container div for each file
+                const boxContainer = document.createElement("div");
+                boxContainer.classList.add("media-box");
 
-                imgElement.addEventListener("click", function() {
-                    Array.from(imageList.getElementsByClassName("image-list__item")).forEach(item => {
-                        item.classList.remove("selected");
+                // Toggle selection on click
+                boxContainer.addEventListener("click", function() {
+                    // Remove 'selected-box' class from all boxes
+                    document.querySelectorAll('.media-box').forEach(box => {
+                        box.classList.remove('selected-box');
                     });
-                    this.classList.add("selected");
-                    // Check if a cropped version exists, and display it
-                    const imgSrc = this.src;
-                    if (croppedImageSrcs[imgSrc]) {
-                        previewImage(croppedImageSrcs[imgSrc]); // Display cropped image
+                    
+                    // Add 'selected' class to the clicked box
+                    this.classList.add("selected-box");
+                    
+                    // Attempt to find an image within the clicked box
+                    const imgElement = this.querySelector('img');
+                    
+                    if (imgElement) {
+                        const imgSrc = imgElement.src;
+                        // If it contains an image, call the previewImage function with the image's src
+                        if (croppedImageSrcs[imgSrc]) {
+                            previewImage(croppedImageSrcs[imgSrc]); // Display cropped image
+                        } else {
+                            previewImage(imgSrc); // Display original image
+                        }
                     } else {
-                        previewImage(imgSrc); // Display original image
+                        resetPreview(); // Reset the preview if the selected box does not contain an image
                     }
-                    checkAndToggleResetButton(this.src); // Check and toggle reset button based on the selected image
+                    console.log(receiptList);
                 });
+                
+                if (file.type === "image/jpeg" || file.type === "image/png") {
+                    // It's an image
+                    const image = document.createElement("img");
+                    image.src = this.result;
+                    // Add the loaded image source to originalImageSrcs
+                    image.classList.add("media-image");
+                    boxContainer.appendChild(image);
+                } else if (file.type === "application/pdf") {
+                    // It's a PDF
+                    const pdfText = document.createElement("span");
+                    pdfText.textContent = `PDF: ${file.name}`;
+                    pdfText.classList.add("media-pdf");
+                    boxContainer.appendChild(pdfText);
+                }
 
+                originalImageSrcs[this.result] = this.result; 
+                fileTypes[this.result] = file.type;
+                
+                // Append the container to the list
+                receiptList.appendChild(boxContainer);
+                console.log(receiptList);
+                
+                // Optional: Add a remove button to each box
                 const removeButton = document.createElement("button");
                 removeButton.innerText = "x";
                 removeButton.classList.add("remove-button");
-                removeButton.addEventListener("click", function(event) {
-                    event.stopPropagation(); // Prevent the click from triggering the image click event
-                    imageList.removeChild(listItem);
-                    const imgSrc = imgElement.src;
-                    delete croppers[imgSrc]; // Remove cropper instance
-                    delete originalImageSrcs[imgSrc]; // Remove original image source
-                    delete croppedImageSrcs[imgSrc]; // Remove cropped image source
-                    if (imgElement.classList.contains("selected")) {
-                        resetPreview();
-                    }
+                removeButton.addEventListener("click", function() {
+                    event.stopPropagation(); // Prevent the box from being selected when the remove button is clicked
+                    receiptList.removeChild(boxContainer);
                 });
+                boxContainer.appendChild(removeButton);
 
-                const listItem = document.createElement("div");
-                listItem.classList.add("image-list__item");
-                listItem.appendChild(imgElement);
-                listItem.appendChild(removeButton);
-                imageList.appendChild(listItem);
-                }
+                new Sortable(receiptList, {
+                    animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
+                    ghostClass: 'sortable-ghost', // Class name for the drop placeholder
+                    dragClass: "sortable-drag", // Class name for the dragging item
+                    onEnd: function (/**Event*/evt) {
+                        // Event when sorting has stopped
+                        // You can add additional logic here if needed
+                    },
+                });
             });
-
             reader.readAsDataURL(file);
         });
     });
 
+
     clearAllButton.addEventListener("click", function() {
-        imageList.innerHTML = "";
+        // Select all elements with the class 'media-box' and remove them
+        document.querySelectorAll('.media-box').forEach(box => {
+            box.remove();
+        });
+
+        // Reset any additional UI elements as necessary
         resetPreview();
+
+        // Reset data structures
+        Object.keys(croppers).forEach(function(imgSrc) {
+            croppers[imgSrc].destroy(); // Properly dispose of Cropper instances
+            delete croppers[imgSrc]; // Remove from the croppers object
+        });
+        originalImageSrcs = {}; // Reset original image sources
+        croppedImageSrcs = {}; // Reset original image sources
+        croppedImagesStatus = {}; // Reset cropped images status
+        fileTypes = {}; // Reset file types
     });
 
     activateCropperButton.addEventListener("click", function() {
-        const selectedImage = imageList.querySelector("img.selected");
+        const selectedImage = receiptList.querySelector(".selected-box img");
         console.log(selectedImage);
         if (selectedImage) {
             const imgSrc = selectedImage.src;
@@ -140,12 +152,12 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     cropButton.addEventListener("click", function() {
-        const selectedImage = imageList.querySelector("img.selected");
+        const selectedImage = receiptList.querySelector(".selected-box img");
         if (selectedImage) {
             const imgSrc = selectedImage.src;
             if (croppers[imgSrc]) {
                 const croppedCanvas = croppers[imgSrc].getCroppedCanvas();
-                croppedImageSrcs[imgSrc] = croppedCanvas.toDataURL();
+                croppedImageSrcs[imgSrc] = croppedCanvas.toDataURL('image/jpeg');
                 previewImage(croppedImageSrcs[imgSrc]);
                 croppers[imgSrc].destroy();
                 delete croppers[imgSrc];
@@ -165,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     resetImageButton.addEventListener("click", function() {
-        const selectedImage = imageList.querySelector("img.selected");
+        const selectedImage = receiptList.querySelector(".selected-box img");
         if (selectedImage) {
             const imgSrc = selectedImage.src;
 
@@ -214,12 +226,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function resetPreview() {
-        if (croppers) {
-            Object.values(croppers).forEach(cropper => cropper.destroy());
-            croppers = {};
-        }
-        originalImageSrcs = {};
-        croppedImageSrcs = {};
         imagePreviewImage.setAttribute("src", "");
         imagePreviewDefaultText.style.display = "block";
         imagePreviewImage.style.display = "none";
@@ -269,8 +275,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Assuming getTextBoxes() returns an array of text items to insert
     async function insertTextIntoFirstPagePdf(pdfDoc) {
-        const pages = pdfDoc.getPages();
-        const firstPage = pages[0];
 
         const form = pdfDoc.getForm();
 
@@ -318,7 +322,8 @@ document.addEventListener("DOMContentLoaded", function() {
             return pdfDoc;
         }
     
-        for (const key of Object.keys(originalImageSrcs)) {
+        // console.log("getOrderFromReceiptList():", getOrderFromReceiptList()); // Debugging log
+        for (const key of getOrderFromReceiptList()) {
             // Get the image source to add to the PDF (use cropped version if available)
             const imgSrc = croppedImageSrcs[key] ? croppedImageSrcs[key] : originalImageSrcs[key];
 
@@ -330,21 +335,38 @@ document.addEventListener("DOMContentLoaded", function() {
                 const imageBytes = await fetch(imgSrc).then(res => res.arrayBuffer());
                 const image = await pdfDoc.embedJpg(imageBytes);
                 const page = pdfDoc.addPage();
+                const { width, height } = page.getSize();
+                const imgDims = image.scale(1); // Get original dimensions
+                const aspectRatio = imgDims.width / imgDims.height;
+                let imgWidth = width;
+                let imgHeight = imgWidth / aspectRatio;
+                if (imgHeight > height) {
+                    imgHeight = height;
+                    imgWidth = imgHeight * aspectRatio;
+                }
                 page.drawImage(image, {
-                    x: 0,
-                    y: 0,
-                    width: page.getWidth(),
-                    height: page.getHeight(),
+                    x: (width - imgWidth) / 2, // Center the image
+                    y: (height - imgHeight) / 2,
+                    width: imgWidth,
+                    height: imgHeight,
                 });
             } else if (fileTypes[key] === 'image/png') {
                 const imageBytes = await fetch(imgSrc).then(res => res.arrayBuffer());
                 const image = await pdfDoc.embedPng(imageBytes);
                 const page = pdfDoc.addPage();
+                const imgDims = image.scale(1); // Get original dimensions
+                const aspectRatio = imgDims.width / imgDims.height;
+                let imgWidth = width;
+                let imgHeight = imgWidth / aspectRatio;
+                if (imgHeight > height) {
+                    imgHeight = height;
+                    imgWidth = imgHeight * aspectRatio;
+                }
                 page.drawImage(image, {
-                    x: 0,
-                    y: 0,
-                    width: page.getWidth(),
-                    height: page.getHeight(),
+                    x: (width - imgWidth) / 2, // Center the image
+                    y: (height - imgHeight) / 2,
+                    width: imgWidth,
+                    height: imgHeight,
                 });
             } else if (fileTypes[key] === 'application/pdf') {
                 const pdfBytes = await fetch(imgSrc).then(res => res.arrayBuffer());
@@ -355,7 +377,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     pdfDoc.addPage(embeddedPage);
                 }
             } else {
-                console.error("Unsupported file type:", fileType);
+                console.error("Unsupported file type:", fileTypes[key]);
             }
         }
 
@@ -363,3 +385,27 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
 });
+
+
+// Function to get the order of items in receiptList
+function getOrderFromReceiptList() {
+    const receiptList = document.getElementById('receiptList'); // Assuming the ID of your list is 'receiptList'
+    const order = [];
+
+    // Iterate over each child of receiptList
+    receiptList.childNodes.forEach((child) => {
+        if (child.nodeType === Node.ELEMENT_NODE) { // Ensure it's an element node
+            if (child.querySelector('.media-image')) {
+                // If it's an image, get the src attribute
+                const imgSrc = child.querySelector('img').src;
+                order.push(imgSrc);
+            } else if (child.querySelector('.media-pdf')) {
+                // If it's a PDF, get the text content
+                const pdfText = child.querySelector('.media-pdf').textContent;
+                order.push(pdfText);
+            }
+        }
+    });
+
+    return order;
+}
