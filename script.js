@@ -15,21 +15,56 @@ document.addEventListener("DOMContentLoaded", function() {
     let originalImageSrcs = {}; // Object to store original image sources for each image
     let croppedImageSrcs = {}; // Object to store cropped image sources for each image
     let croppedImagesStatus = {}; // Object to store the status of cropped images for each image
+    let fileTypes = {}; // Object to store file types for each file
+    let pdfFiles = {}; // Object to store PDF files separately
+
+    console.log("HEJ");
 
     imageUpload.addEventListener("change", function() {
         const files = this.files;
 
-        Array.from(files).forEach(file => {
+        Array.from(files).forEach((file) => {
             const reader = new FileReader();
+            console.log(file.type);
 
             reader.addEventListener("load", function() {
+
+                // Store the file type
+                fileTypes[this.result] = file.type;
+
+                if (file.type === "application/pdf") {
+                    const listItem = document.createElement("li"); // Create a list item or div
+                    listItem.classList.add("image-list__item", "pdf-item");
+
+                    const pdfText = document.createElement("span"); // Create a span for the PDF text
+                    pdfText.textContent = `PDF: ${file.name}`;
+                    listItem.appendChild(pdfText); // Append the PDF text to the list item
+
+                    originalImageSrcs[this.result] = this.result;
+
+                    const removeButton = document.createElement("button");
+                    removeButton.innerText = "x";
+                    removeButton.classList.add("remove-button");
+                    removeButton.addEventListener("click", function(event) {
+                        event.stopPropagation(); // Prevent the click from triggering the PDF item click event
+                        imageList.removeChild(listItem);
+                        delete originalImageSrcs[pdfText.textContent]; // Adjust this line based on how you're tracking PDF files
+                        // Additional cleanup if necessary
+                    });
+                    listItem.appendChild(removeButton); // Append the remove button to the list item
+
+                    imageList.appendChild(listItem); // Append the list item to the image list
+
+                } else {
+
                 const imgElement = document.createElement("img");
                 imgElement.src = this.result;
                 imgElement.classList.add("image-list__item");
 
                 // Add the loaded image source to originalImageSrcs
                 originalImageSrcs[this.result] = imgElement.src; // Or true, if you just want to mark it as added
-
+                
+                console.log(imgElement.src); // Debugging log
 
                 imgElement.addEventListener("click", function() {
                     Array.from(imageList.getElementsByClassName("image-list__item")).forEach(item => {
@@ -66,6 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 listItem.appendChild(imgElement);
                 listItem.appendChild(removeButton);
                 imageList.appendChild(listItem);
+                }
             });
 
             reader.readAsDataURL(file);
@@ -195,18 +231,44 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     createPdfButton.addEventListener("click", function() {
-        pdfDoc = insertTextIntoFirstPagePdf(textItems);
-        createPdfWithFirstPageAndImages(pdfDoc);
+        modifyAndCreatePdf();
     });
+
+    async function modifyAndCreatePdf() {
+        // Load an existing PDF document
+        const existingPdfBytes = await fetch('Kvittomall_LiTHeBlås.pdf').then(res => res.arrayBuffer());
+        let pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+    
+        // Insert text into the first page
+        pdfDoc = await insertTextIntoFirstPagePdf(pdfDoc);
+    
+        // Add images or perform other operations
+        pdfDoc = await createPdfWithFirstPageAndImages(pdfDoc);
+    
+        // Serialize the PDFDocument to bytes
+        const pdfBytes = await pdfDoc.save();
+
+        // Create a blob from the PDF bytes
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+        // Create a URL for the blob
+        const blobUrl = URL.createObjectURL(blob);
+
+        // Create an anchor element and trigger the download
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = 'modified-pdf.pdf'; // Specify the download file name
+        document.body.appendChild(link);
+        link.click();
+
+        // Cleanup: remove the link after triggering download
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+    }
 
 
     // Assuming getTextBoxes() returns an array of text items to insert
-    async function insertTextIntoFirstPagePdf(textItems) {
-         // Load the existing PDF
-        const existingPdfBytes = await fetch('Kvittomall_LiTHeBlås.pdf').then(res => res.arrayBuffer());
-
-        // Load a PDFDocument from the existing PDF bytes
-        const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+    async function insertTextIntoFirstPagePdf(pdfDoc) {
         const pages = pdfDoc.getPages();
         const firstPage = pages[0];
 
@@ -220,8 +282,6 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log(field.getName());
         });
 
-        console.log(textItems); // Debugging log
-    
         const nameField = form.getTextField('Textf#C3#A4lt 1');
         const informationField = form.getTextField('Textf#C3#A4lt 2');
         const krField = form.getTextField('Valutaf#C3#A4lt 1');
@@ -245,75 +305,61 @@ document.addEventListener("DOMContentLoaded", function() {
 
     }
 
-    // Function to create a PDF from images
-    function createPdfFromImages() {
-        const doc = new jspdf.jsPDF();
-        let imagesProcessed = 0;
+    async function createPdfWithFirstPageAndImages(pdfDoc) {
         const totalImages = Object.keys(originalImageSrcs).length;
+
+        if(totalImages === 0) { // If no images are present
+            const proceedWithoutImages = confirm("Inga bilder på kvitton hittades. Vill du skapa PDF:en utan kvitton?");
+            if (!proceedWithoutImages) {
+                console.log("PDF creation cancelled.");
+                return null; // Return null or handle as needed to indicate cancellation
+            }
+            console.log("Creating PDF without images.");
+            return pdfDoc;
+        }
     
-        Object.keys(originalImageSrcs).forEach((key, index) => {
+        for (const key of Object.keys(originalImageSrcs)) {
+            // Get the image source to add to the PDF (use cropped version if available)
             const imgSrc = croppedImageSrcs[key] ? croppedImageSrcs[key] : originalImageSrcs[key];
+
             console.log("Adding image to PDF:", imgSrc); // Debugging log
     
-            const img = new Image();
-            img.crossOrigin = "Anonymous"; // Use this if images are from a different origin
-            img.src = imgSrc;
-            img.onload = function() {
-                // Create a canvas to convert image to data URL
-                const canvas = document.createElement("canvas");
-                canvas.width = img.width;
-                canvas.height = img.height;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0);
-                
-                // Convert canvas to PNG data URL
-                const dataURL = canvas.toDataURL("image/png");
-                
-                // Calculate aspect ratio of the image
-                const aspectRatio = img.width / img.height;
-                
-                // Define maximum dimensions considering page size and margins
-                const pageWidth = 210 - 40; // A4 width - margins
-                const pageHeight = 297 - 40; // A4 height - margins
-                let newWidth, newHeight;
-                
-                // Scale image to fit within the maximum dimensions while maintaining aspect ratio
-                if (aspectRatio > 1) { // Landscape orientation
-                    newWidth = Math.min(img.width, pageWidth);
-                    newHeight = newWidth / aspectRatio;
-                } else { // Portrait orientation
-                    newHeight = Math.min(img.height, pageHeight);
-                    newWidth = newHeight * aspectRatio;
+            console.log(fileTypes[key]); // Debugging log
+
+            if (fileTypes[key] === 'image/jpg' || fileTypes[key] === 'image/jpeg') {
+                const imageBytes = await fetch(imgSrc).then(res => res.arrayBuffer());
+                const image = await pdfDoc.embedJpg(imageBytes);
+                const page = pdfDoc.addPage();
+                page.drawImage(image, {
+                    x: 0,
+                    y: 0,
+                    width: page.getWidth(),
+                    height: page.getHeight(),
+                });
+            } else if (fileTypes[key] === 'image/png') {
+                const imageBytes = await fetch(imgSrc).then(res => res.arrayBuffer());
+                const image = await pdfDoc.embedPng(imageBytes);
+                const page = pdfDoc.addPage();
+                page.drawImage(image, {
+                    x: 0,
+                    y: 0,
+                    width: page.getWidth(),
+                    height: page.getHeight(),
+                });
+            } else if (fileTypes[key] === 'application/pdf') {
+                const pdfBytes = await fetch(imgSrc).then(res => res.arrayBuffer());
+                const embeddedPdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+                const pageCount = embeddedPdfDoc.getPageCount();
+                for (let i = 0; i < pageCount; i++) {
+                    const [embeddedPage] = await pdfDoc.copyPages(embeddedPdfDoc, [i]);
+                    pdfDoc.addPage(embeddedPage);
                 }
-                
-                // Check if scaled dimensions are still too large for the page
-                if (newHeight > pageHeight) {
-                    newHeight = pageHeight;
-                    newWidth = newHeight * aspectRatio;
-                }
-                
-                // Calculate positions to center the image
-                const xPos = (pageWidth - newWidth) / 2 + 20; // Add margin to x position
-                const yPos = (pageHeight - newHeight) / 2 + 20; // Add margin to y position
-                
-                // Add a new page for every image after the first
-                if (index > 0) {
-                    doc.addPage();
-                }
-                
-                // Use the data URL for the image, with adjusted dimensions to maintain aspect ratio
-                doc.addImage(dataURL, 'PNG', xPos, yPos, newWidth, newHeight);
-                
-                imagesProcessed++;
-                if (imagesProcessed === totalImages) {
-                    doc.save('images.pdf');
-                }
-            };
-        });
-    
-        if(totalImages === 0) { // If no images are present, just save an empty PDF
-            doc.save('images.pdf');
+            } else {
+                console.error("Unsupported file type:", fileType);
+            }
         }
+
+        return pdfDoc;
     }
 
 });
