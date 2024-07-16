@@ -3,26 +3,70 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0;
+    max-width: 800px; /* Adjust this value to suit your design */
+    margin: 0 auto; /* Centers the content */
+    padding: 0 20px; /* Adds some padding on the sides */
     background-color: #f4f4f4;
 }
 
 .container {
-    text-align: center;
-    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 800px; /* Adjust based on your preference */
+    margin: 0 auto; /* This centers the container */
 }
 
 #imageUpload {
     margin: 20px 0;
 }
 
-.clear-all-button, .activate-cropper-button, .crop-button, .reset-image-button {
-    margin-bottom: 20px;
+.clear-all-button{
+    margin: 20px;
     padding: 10px 20px;
     background-color: #ff0000;
     color: white;
     border: none;
     cursor: pointer;
+}
+
+.activate-cropper-button{
+    margin: 20px;
+    padding: 10px 20px;
+    background-color: #0044ff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.crop-button{
+    margin: 20px;
+    padding: 10px 20px;
+    background-color: #0044ff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.reset-image-button {
+    margin: 20px;
+    padding: 10px 20px;
+    background-color: #ebb609;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.firstButtonRow {
+    display: flex;
+    justify-content: space-around; /* Adjust as needed */
+}
+
+.secondButtonRow {
+    display: flex;
+    justify-content: space-around; /* Adjust as needed */
 }
 
 .clear-all-button:hover, .activate-cropper-button:hover, .crop-button:hover, .reset-image-button:hover {
@@ -32,12 +76,18 @@ body {
 #receiptList {
     display: flex;
     flex-direction: row;
-    align-items: flex-start; /* Align items at the start of the container */
+    align-items: center; /* Vertically centers items */
+    justify-content: center; /* Horizontally centers items */
     flex-wrap: wrap; /* Allow wrapping if there's not enough space */
     gap: 10px; /* Space between boxes */
+    margin: 0 auto; /* Ensures the list itself is centered in its parent */
+    max-width: 800px; /* Adjust based on your preference */
+    border: 1px solid #161616; /* Optional: Adds a border around each box */
+    background-color: #bdbdbd10;
 }
 
 .media-box {
+    width: calc(800px / 8); /* Adjust width to fit 3 side by side */
     position: relative;
     border: 1px solid #ccc; /* Optional: Adds a border around each box */
     padding: 10px; /* Adds some padding inside the boxes */
@@ -48,17 +98,13 @@ body {
 }
 
 .media-image {
-    max-width: 200px; /* Ensure the image does not exceed the box size */
-    max-height: 200px; /* Ensure the image does not exceed the box size */
+    max-width: 100px; /* Ensure the image does not exceed the box size */
+    max-height: 100px; /* Ensure the image does not exceed the box size */
     object-fit: cover; /* Cover the container without losing aspect ratio */
 }
 
 .selected-box {
     border: 2px solid blue; /* Example style for selected state */
-}
-
-.media-box img.selected {
-    border-color: #007bff;
 }
 
 .remove-button {
@@ -83,21 +129,25 @@ body {
     color: #cccccc;
     background-color: white;
     border: 2px solid #dddddd;
-    max-width: 500px;
-    max-height: 500px;
+    max-width: 600px;
+    max-height: 600px;
     width: auto;
     height: auto;
     margin-bottom: 20px; /* Added margin */
     overflow: hidden; /* Ensure content doesn't overflow */
+    font-size: 20px; /* Increased font size */
+    padding: 16px; /* Added padding */
 }
 
 .image-preview__image {
     width: 100%;
     height: auto;
+    border: 2px solid #dddddd8e;
     max-width: 100%;
     max-height: 100%;
     object-fit: contain; /* Ensures image fits within container without stretching */
     display: none; /* Hidden by default */
+    align-items: center;
 }
 
 .reset-image-button {
@@ -113,8 +163,69 @@ body {
     background-color: #ec971f;
 }
 
+.form-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    margin: 20px 0;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.expense-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.expense-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column; /* Change to column to stack label above input */
+    align-items: flex-start; /* Align items to the start (left) */
+}
+
+.expense-form input[type="text"],
+.expense-form input[type="number"],
+.expense-form input[type="date"],
+.expense-form textarea {
+    width: 100%; /* Make input fields take full width of their container */
+    margin-left: 0; /* Ensures alignment to the left */
+}
+
+.expense-form input[type="text"],
+.expense-form input[type="number"],
+.expense-form input[type="date"],
+.expense-form textarea {
+        flex-grow: 1; /* Makes input fields take up the remaining space */
+    /* Set a specific width if you want all textboxes to have the same fixed width */
+}
+
+.name-row {
+    display: flex;
+    gap: 50px; /* Adjust the gap between the two fields as needed */
+}
+
+.amount-date-row {
+    display: flex;
+    gap: 50px; /* Adjust the gap between the two fields as needed */
+}
+
+.account-clearing-row {
+    display: flex;
+    gap: 50px; /* Adjust the gap between the two fields as needed */
+}
+
 .create-pdf-button {
-    margin-bottom: 20px;
+    margin: 20px;
     padding: 10px 20px;
     background-color: #5cb85c; /* Green color to differentiate from the reset button */
     color: white;

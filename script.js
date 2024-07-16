@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     
                     if (imgElement) {
                         const imgSrc = imgElement.src;
+                        checkAndToggleResetButton(imgSrc)
                         // If it contains an image, call the previewImage function with the image's src
                         if (croppedImageSrcs[imgSrc]) {
                             previewImage(croppedImageSrcs[imgSrc]); // Display cropped image
@@ -322,6 +323,8 @@ document.addEventListener("DOMContentLoaded", function() {
             return pdfDoc;
         }
     
+        const margin = 20; // This value can be adjusted as needed
+
         // console.log("getOrderFromReceiptList():", getOrderFromReceiptList()); // Debugging log
         for (const key of getOrderFromReceiptList()) {
             // Get the image source to add to the PDF (use cropped version if available)
@@ -338,10 +341,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 const { width, height } = page.getSize();
                 const imgDims = image.scale(1); // Get original dimensions
                 const aspectRatio = imgDims.width / imgDims.height;
-                let imgWidth = width;
+                let imgWidth = width - (margin * 2);
                 let imgHeight = imgWidth / aspectRatio;
-                if (imgHeight > height) {
-                    imgHeight = height;
+                if (imgHeight > (height - (margin * 2))) {
+                    imgHeight = height - (margin * 2);
                     imgWidth = imgHeight * aspectRatio;
                 }
                 page.drawImage(image, {
@@ -356,10 +359,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 const page = pdfDoc.addPage();
                 const imgDims = image.scale(1); // Get original dimensions
                 const aspectRatio = imgDims.width / imgDims.height;
-                let imgWidth = width;
+                let imgWidth = width - (margin * 2);
                 let imgHeight = imgWidth / aspectRatio;
-                if (imgHeight > height) {
-                    imgHeight = height;
+                if (imgHeight > (height - (margin * 2))) {
+                    imgHeight = height - (margin * 2);
                     imgWidth = imgHeight * aspectRatio;
                 }
                 page.drawImage(image, {

@@ -3,53 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multiple Image Upload and Display</title>
+    <title>Lithe Blås kvittomalls skapare 3000</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://unpkg.com/cropperjs/dist/cropper.css">
 </head>
 <body>
     <div class="container">
-        <h1>Upload and Display Multiple Images</h1>
+        <h1>Lithe Blås kvittomallsskapare 3000</h1>
+        <p>Ansök om ersättning genom att fylla i följande mall. <br>Skicka sedan in mallen som PDF till kronharpa@litheblas.org med
+            ämnesraden ”Ersättning”.</p>
         <form>
-            <label for="firstName">Förnamn:</label>
-            <input type="text" id="firstName" name="firstName"><br><br>
-
-            <label for="surName">Efternamn:</label>
-            <input type="text" id="surName" name="surName"><br><br>
+            <div class="name-row">
+                <div class="form-row">
+                    <label for="firstName">Förnamn</label>
+                    <input type="text" id="firstName" name="firstName">
+                </div>
+                <div class="form-row">
+                    <label for="surName">Efternamn</label>
+                    <input type="text" id="surName" name="surName">
+                </div>
+            </div>
           
-            <label for="expenseInfo">Information om utgiften:</label>
-            <textarea id="expenseInfo" name="expenseInfo" rows="4" cols="50"></textarea><br><br>
+            <div class="form-row">
+                <label for="expenseInfo">Information om utgiften:</label>
+                <textarea id="expenseInfo" name="expenseInfo" rows="4" cols="50"></textarea>
+            </div>
           
-            <label for="amount">Summa (SEK):</label>
-            <input type="number" id="amount" name="amount"><br><br>
+            <div class="amount-date-row">
+                <div class="form-row">
+                    <label for="amount">Summa (SEK):</label>
+                    <input type="number" id="amount" name="amount">
+                </div>
+                <div class="form-row">
+                    <label for="date">Datum:</label>
+                    <input type="date" id="date" name="date">
+                </div>
+            </div>
           
-            <label for="date">Datum:</label>
-            <input type="date" id="date" name="date"><br><br>
+            <div class="account-clearing-row">
+                <div class="form-row">
+                    <label for="accountNumber">Bankkontonummer:</label>
+                    <input type="text" id="accountNumber" name="accountNumber">
+                </div>
+                <div class="form-row">
+                    <label for="clearingNumber">Clearingnummer:</label>
+                    <input type="text" id="clearingNumber" name="clearingNumber">
+                </div>
+            </div>
           
-            <label for="accountNumber">Bankkontonummer:</label>
-            <input type="text" id="accountNumber" name="accountNumber"><br><br>
-          
-            <label for="clearingNumber">Clearingnummer:</label>
-            <input type="text" id="clearingNumber" name="clearingNumber"><br><br>
-          
-            <label for="bank">Bank:</label>
-            <input type="text" id="bank" name="bank"><br><br>
+            <div class="form-row">
+                <label for="bank">Bank:</label>
+                <input type="text" id="bank" name="bank">
+            </div>
         </form>
-        <input type="file" id="imageUpload" accept=".jpg, .jpeg, .png, .pdf" multiple>
-        <button id="clearAllButton" class="clear-all-button">Clear All Images</button>
+        <p>Lägg till bild eller pdf med kvittot på så läggs det till i kvittomallen. <br>Bilder kan beskäras om du trycker på den och sedan beskär. <br>Bilder kan också sorteras genom at dra i dom i listan</p>
+        <div class="firstButtonRow">
+            <input type="file" id="imageUpload" accept=".jpg, .jpeg, .png, .pdf" multiple>
+            <button id="clearAllButton" class="clear-all-button">Ta bort alla bilder</button>
+            <button id="createPdfButton" class="create-pdf-button">Skapa PDF</button>
+        </div>
         <div id="receiptList" class="receipt-list"></div>
+        <div class="secondButtonRow">
+            <button id="activateCropperButton" class="activate-cropper-button" style="display: none;">Beskär vald bild</button>
+            <button id="cropButton" class="crop-button" style="display: none;">Beskär bilden</button>
+            <button id="resetImageButton" class="reset-image-button" style="display: none;">Återställ bild</button>
+        </div>
+
         <div class="image-preview" id="imagePreview">
             <img src="" alt="Image Preview" class="image-preview__image">
-            <span class="image-preview__default-text">Image Preview</span>
+            <span class="image-preview__default-text">Bildförhandsgranskning</span>
         </div>
-        <button id="activateCropperButton" class="activate-cropper-button" style="display: none;">Activate Cropper</button>
-        <button id="cropButton" class="crop-button" style="display: none;">Crop Image</button>
-        <button id="resetImageButton" class="reset-image-button" style="display: none;">Reset Image</button>
-        <button id="createPdfButton" class="create-pdf-button">Create PDF</button>
     </div>
     <script src="https://unpkg.com/cropperjs"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.js"></script> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
     <script type="module" src="script.js"></script>
