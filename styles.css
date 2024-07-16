@@ -62,11 +62,13 @@ body {
 .firstButtonRow {
     display: flex;
     justify-content: space-around; /* Adjust as needed */
+    flex-wrap: wrap; /* Allows items to wrap onto the next line */
 }
 
 .secondButtonRow {
     display: flex;
     justify-content: space-around; /* Adjust as needed */
+    flex-wrap: wrap; /* Allows items to wrap onto the next line */
 }
 
 .clear-all-button:hover, .activate-cropper-button:hover, .crop-button:hover, .reset-image-button:hover {
@@ -168,7 +170,7 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    margin: 20px 0;
+    margin: 20px auto;
     background-color: #f8f9fa;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -211,17 +213,17 @@ body {
 
 .name-row {
     display: flex;
-    gap: 50px; /* Adjust the gap between the two fields as needed */
+    gap: 30px; /* Adjust the gap between the two fields as needed */
 }
 
 .amount-date-row {
     display: flex;
-    gap: 50px; /* Adjust the gap between the two fields as needed */
+    gap: 30px; /* Adjust the gap between the two fields as needed */
 }
 
 .account-clearing-row {
     display: flex;
-    gap: 50px; /* Adjust the gap between the two fields as needed */
+    gap: 30px; /* Adjust the gap between the two fields as needed */
 }
 
 .create-pdf-button {
