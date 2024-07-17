@@ -95,8 +95,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
                     ghostClass: 'sortable-ghost', // Class name for the drop placeholder
                     dragClass: "sortable-drag", // Class name for the dragging item
-                    forceFallback: true, // Force fallback to ensure touch events are captured
-                    fallbackOnBody: true, // Place the drag clone into body to improve performance
+                    // forceFallback: true, // Force fallback to ensure touch events are captured
+                    // fallbackOnBody: true, // Place the drag clone into body to improve performance
                     onEnd: function (/**Event*/evt) {
                         // Event when sorting has stopped
                         // You can add additional logic here if needed
