@@ -89,7 +89,7 @@ body {
 }
 
 .media-box {
-    width: calc(800px / 8); /* Adjust width to fit 3 side by side */
+    width: calc(800px / 8);
     position: relative;
     border: 1px solid #ccc; /* Optional: Adds a border around each box */
     padding: 10px; /* Adds some padding inside the boxes */
@@ -99,10 +99,27 @@ body {
     justify-content: center; /* Centers items vertically */
 }
 
+.handle {
+    display: block;
+    width: 100%;
+    text-align: center;
+    cursor: grab; /* or pointer */
+    margin-top: auto; /* This helps push the handle to the bottom if the container is a flex container */
+}
+
 .media-image {
     max-width: 100px; /* Ensure the image does not exceed the box size */
     max-height: 100px; /* Ensure the image does not exceed the box size */
     object-fit: cover; /* Cover the container without losing aspect ratio */
+}
+
+.media-pdf {
+    font-size: 14px; /* Starting font size */
+    overflow-wrap: break-word; /* Breaks long words to prevent overflow */
+    max-width: 100%; /* Ensures content does not overflow the box's width */
+    word-wrap: break-word; /* Legacy support for breaking long words */
+    line-height: 1.2; /* Adjust line height to ensure readability */
+    margin-bottom: 5px;
 }
 
 .selected-box {
@@ -194,6 +211,13 @@ body {
     flex-direction: column; /* Change to column to stack label above input */
     align-items: flex-start; /* Align items to the start (left) */
 }
+
+input[type=text], input[type=number], input[type=date], textarea {
+    width: 100%;
+    padding: 6px 10px;
+    margin: 8px 0;
+    box-sizing: border-box;
+  }
 
 .expense-form input[type="text"],
 .expense-form input[type="number"],

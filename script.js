@@ -22,8 +22,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
         Array.from(files).forEach((file) => {
             const reader = new FileReader();
-            console.log(file.type);
-
+            console.log("File type of uploaded file:", file.type);
+            
+            if(file.type !== "image/jpeg" && file.type !== "image/png" && file.type !== "application/pdf") {
+                alert("Endast bilder (JPEG, PNG) och PDF-filer stöds. Denna fil kommer inte att läggas till: ", file.name);
+                return; // Skip to the next file if it's not an image or PDF
+            }
             
             reader.addEventListener("load", function() {
                 
@@ -70,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     // It's a PDF
                     const pdfText = document.createElement("span");
                     pdfText.textContent = `PDF: ${file.name}`;
+                    pdfText.src = this.result;
                     pdfText.classList.add("media-pdf");
                     boxContainer.appendChild(pdfText);
                 }
@@ -91,12 +96,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
                 boxContainer.appendChild(removeButton);
 
+                const handle = document.createElement("div");
+                handle.classList.add("handle");
+                handle.textContent = "≡"; // Using the triple bar icon as an example
+                boxContainer.appendChild(handle);
+
                 new Sortable(receiptList, {
                     animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
                     ghostClass: 'sortable-ghost', // Class name for the drop placeholder
                     dragClass: "sortable-drag", // Class name for the dragging item
-                    // forceFallback: true, // Force fallback to ensure touch events are captured
-                    // fallbackOnBody: true, // Place the drag clone into body to improve performance
+                    handle: ".handle", // Restricts sort start click/touch to the specified element
                     onEnd: function (/**Event*/evt) {
                         // Event when sorting has stopped
                         // You can add additional logic here if needed
@@ -406,8 +415,8 @@ function getOrderFromReceiptList() {
                 order.push(imgSrc);
             } else if (child.querySelector('.media-pdf')) {
                 // If it's a PDF, get the text content
-                const pdfText = child.querySelector('.media-pdf').textContent;
-                order.push(pdfText);
+                const pdfSrc = child.querySelector('.media-pdf').src;
+                order.push(pdfSrc);
             }
         }
     });
