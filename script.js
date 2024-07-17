@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 boxContainer.classList.add("media-box");
 
                 // Toggle selection on click
-                boxContainer.addEventListener("touchend", function() {
+                boxContainer.addEventListener("click", function() {
                     // Remove 'selected-box' class from all boxes
                     document.querySelectorAll('.media-box').forEach(box => {
                         box.classList.remove('selected-box');
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const removeButton = document.createElement("button");
                 removeButton.innerText = "x";
                 removeButton.classList.add("remove-button");
-                removeButton.addEventListener("touchend", function() {
+                removeButton.addEventListener("click", function() {
                     event.stopPropagation(); // Prevent the box from being selected when the remove button is clicked
                     receiptList.removeChild(boxContainer);
                 });
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
 
-    clearAllButton.addEventListener("touchend", function() {
+    clearAllButton.addEventListener("click", function() {
         // Select all elements with the class 'media-box' and remove them
         document.querySelectorAll('.media-box').forEach(box => {
             box.remove();
@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function() {
         fileTypes = {}; // Reset file types
     });
 
-    activateCropperButton.addEventListener("touchend", function() {
+    activateCropperButton.addEventListener("click", function() {
         const selectedImage = receiptList.querySelector(".selected-box img");
         console.log(selectedImage);
         if (selectedImage) {
@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    cropButton.addEventListener("touchend", function() {
+    cropButton.addEventListener("click", function() {
         const selectedImage = receiptList.querySelector(".selected-box img");
         if (selectedImage) {
             const imgSrc = selectedImage.src;
@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    resetImageButton.addEventListener("touchend", function() {
+    resetImageButton.addEventListener("click", function() {
         const selectedImage = receiptList.querySelector(".selected-box img");
         if (selectedImage) {
             const imgSrc = selectedImage.src;
@@ -239,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function() {
         activateCropperButton.style.display = "none";
     }
 
-    createPdfButton.addEventListener("touchend", function() {
+    createPdfButton.addEventListener("click", function() {
         modifyAndCreatePdf();
     });
 
