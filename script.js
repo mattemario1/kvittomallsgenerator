@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const cropButton = document.getElementById("cropButton");
     const resetImageButton = document.getElementById("resetImageButton");
     const createPdfButton = document.getElementById("createPdfButton");
+    const tourCheckbox = document.getElementById("tourCheckbox");
     const myForm = document.getElementById("myForm");
 
     let croppers = {}; // Object to store cropper instances for each image
@@ -244,8 +245,14 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     async function modifyAndCreatePdf() {
+        let existingPdfBytes;
         // Load an existing PDF document
-        const existingPdfBytes = await fetch('Kvittomall_LiTHeBlås.pdf').then(res => res.arrayBuffer());
+        if (tourCheckbox.checked) {
+            existingPdfBytes = await fetch('Tour_kvittomall.pdf').then(res => res.arrayBuffer());
+        } else {
+            existingPdfBytes = await fetch('Kronharpa_kvittomall.pdf').then(res => res.arrayBuffer());
+        }
+        
         let pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
     
         // Insert text into the first page
@@ -289,13 +296,13 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log(field.getName());
         });
 
-        const nameField = form.getTextField('Textf#C3#A4lt 1');
-        const informationField = form.getTextField('Textf#C3#A4lt 2');
-        const krField = form.getTextField('Valutaf#C3#A4lt 1');
-        const dateField = form.getTextField('Datumf#C3#A4lt 1');
-        const bankNrField = form.getTextField('Textf#C3#A4lt 4');
-        const clearingNrField = form.getTextField('Textf#C3#A4lt 4_2');
-        const bankNameField = form.getTextField('Textf#C3#A4lt 4_3');
+        const nameField = form.getTextField('Text-zMjRHnxoar');
+        const informationField = form.getTextField('Paragraph-z_dFCtt9FN');
+        const krField = form.getTextField('Text-RMOtSe2Y51');
+        const dateField = form.getTextField('Date-PNMTD3qd9s');
+        const bankNrField = form.getTextField('Text-BggVTJak9r');
+        const clearingNrField = form.getTextField('Text-DoHnK7gsQx');
+        const bankNameField = form.getTextField('Text-_ijuoNCZ19');
 
 
         nameField.setText(document.getElementById("firstName").value + ' ' + document.getElementById("surName").value);
