@@ -392,6 +392,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 const imageBytes = await fetch(imgSrc).then(res => res.arrayBuffer());
                 const image = await pdfDoc.embedPng(imageBytes);
                 const page = pdfDoc.addPage();
+                const { width, height } = page.getSize();
                 const imgDims = image.scale(1); // Get original dimensions
                 const aspectRatio = imgDims.width / imgDims.height;
                 let imgWidth = width - (margin * 2);
