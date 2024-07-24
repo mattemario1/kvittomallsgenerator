@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", function() {
         let existingPdfBytes;
         // Load an existing PDF document
         if (tourCheckbox.checked) {
-            existingPdfBytes = await fetch('Tour_kvittomall.pdf').then(res => res.arrayBuffer());
+            existingPdfBytes = await fetch('Tour_Kvittomall.pdf').then(res => res.arrayBuffer());
         } else {
             existingPdfBytes = await fetch('Kronharpa_kvittomall.pdf').then(res => res.arrayBuffer());
         }
