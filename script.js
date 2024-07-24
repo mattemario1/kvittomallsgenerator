@@ -265,7 +265,7 @@ document.addEventListener("DOMContentLoaded", function() {
         let pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
     
         // Insert text into the first page
-        pdfDoc = await insertTextIntoFirstPagePdf(pdfDoc);
+        pdfDoc = insertTextIntoFirstPagePdf(pdfDoc);
     
         // Add images or perform other operations
         pdfDoc = await createPdfWithFirstPageAndImages(pdfDoc);
@@ -293,26 +293,43 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     // Assuming getTextBoxes() returns an array of text items to insert
-    async function insertTextIntoFirstPagePdf(pdfDoc) {
+    function insertTextIntoFirstPagePdf(pdfDoc) {
 
         const form = pdfDoc.getForm();
-
+        
         // Get all form fields in the PDF
         const fields = form.getFields();
-
+        
         // Log the names of all form fields
         fields.forEach(field => {
             console.log(field.getName());
         });
+        
+        let nameField;
+        let informationField;
+        let krField;
+        let dateField;
+        let bankNrField;
+        let clearingNrField;
+        let bankNameField;
 
-        const nameField = form.getTextField('Text-zMjRHnxoar');
-        const informationField = form.getTextField('Paragraph-z_dFCtt9FN');
-        const krField = form.getTextField('Text-RMOtSe2Y51');
-        const dateField = form.getTextField('Date-PNMTD3qd9s');
-        const bankNrField = form.getTextField('Text-BggVTJak9r');
-        const clearingNrField = form.getTextField('Text-DoHnK7gsQx');
-        const bankNameField = form.getTextField('Text-_ijuoNCZ19');
-
+        if (tourCheckbox.checked) {
+            nameField = form.getTextField('Text-zMjRHnxoar');
+            informationField = form.getTextField('Paragraph-z_dFCtt9FN');
+            krField = form.getTextField('Text-RMOtSe2Y51');
+            dateField = form.getTextField('Date-PNMTD3qd9s');
+            bankNrField = form.getTextField('Text-BggVTJak9r');
+            clearingNrField = form.getTextField('Text-DoHnK7gsQx');
+            bankNameField = form.getTextField('Text-_ijuoNCZ19');
+        } else {
+            nameField = form.getTextField('Text-C_2PedO18j');
+            informationField = form.getTextField('Paragraph-i8tgL7KiTn');
+            krField = form.getTextField('Text-6GJwepE8E4');
+            dateField = form.getTextField('Date-bH-N30TgnM');
+            bankNrField = form.getTextField('Text-RC50gjD5on');
+            clearingNrField = form.getTextField('Text-b_Ra7NjZUq');
+            bankNameField = form.getTextField('Text-w66Rc6XRfY');
+        }
 
         nameField.setText(document.getElementById("firstName").value + ' ' + document.getElementById("surName").value);
         informationField.setText(document.getElementById("expenseInfo").value);
