@@ -61,9 +61,13 @@
         <div class="firstButtonRow">
             <input type="file" id="imageUpload" accept=".jpg, .jpeg, .png, .pdf" multiple>
             <button id="clearAllButton" class="clear-all-button">Ta bort alla bilder</button>
-            <div class="checkbox-container">
-                <label for="tourCheckbox">Tour kvittomall:</label>
-                <input type="checkbox" id="tourCheckbox" name="tour">
+            <div class="selectTempletType">
+                <label for="templetTypeOptions">Vilken sorts kvittomall?: </label>
+                <select id="templetTypeOptions" name="templetTypeOptions">
+                    <option value="Normal">Normal</option>
+                    <option value="Tour">Tour</option>
+                    <option value="Lucia">Lucia</option>
+                </select>
             </div>
             <button id="createPdfButton" class="create-pdf-button">Skapa PDF</button>
         </div>

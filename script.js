@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const resetImageButton = document.getElementById("resetImageButton");
     const createPdfButton = document.getElementById("createPdfButton");
     const tourCheckbox = document.getElementById("tourCheckbox");
+    const templetTypeOptions = document.getElementById("templetTypeOptions");
     const myForm = document.getElementById("myForm");
 
     let croppers = {}; // Object to store cropper instances for each image
@@ -256,11 +257,15 @@ document.addEventListener("DOMContentLoaded", function() {
     async function modifyAndCreatePdf() {
         let existingPdfBytes;
         // Load an existing PDF document
-        if (tourCheckbox.checked) {
-            existingPdfBytes = await fetch('Tour_Kvittomall.pdf').then(res => res.arrayBuffer());
-        } else {
+        var templetType = templetTypeOptions.value;
+        if (templetType === 'Normal') {
             existingPdfBytes = await fetch('Kronharpa_kvittomall.pdf').then(res => res.arrayBuffer());
+        } else if (templetType === 'Tour') {
+            existingPdfBytes = await fetch('Tour_kvittomall.pdf').then(res => res.arrayBuffer());
+        } else if (templetType === 'Lucia') {
+            existingPdfBytes = await fetch('Lucia_kvittomall.pdf').then(res => res.arrayBuffer());
         }
+        console.log(templetType);
         
         let pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
     
@@ -282,7 +287,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Create an anchor element and trigger the download
         const link = document.createElement('a');
         link.href = blobUrl;
-        link.download = 'modified-pdf.pdf'; // Specify the download file name
+        link.download = 'Kvittomall.pdf'; // Specify the download file name
         document.body.appendChild(link);
         link.click();
 
@@ -313,7 +318,8 @@ document.addEventListener("DOMContentLoaded", function() {
         let clearingNrField;
         let bankNameField;
 
-        if (tourCheckbox.checked) {
+        var templetType = templetTypeOptions.value;
+        if (templetType === 'Tour') {
             nameField = form.getTextField('Text-zMjRHnxoar');
             informationField = form.getTextField('Paragraph-z_dFCtt9FN');
             krField = form.getTextField('Text-RMOtSe2Y51');
