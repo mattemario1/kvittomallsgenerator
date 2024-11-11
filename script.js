@@ -259,11 +259,11 @@ document.addEventListener("DOMContentLoaded", function() {
         // Load an existing PDF document
         var templetType = templetTypeOptions.value;
         if (templetType === 'Normal') {
-            existingPdfBytes = await fetch('Kronharpa_kvittomall.pdf').then(res => res.arrayBuffer());
+            existingPdfBytes = await fetch('Kvittomallar/Kvittomall_Kronharpa.pdf').then(res => res.arrayBuffer());
         } else if (templetType === 'Tour') {
-            existingPdfBytes = await fetch('Tour_kvittomall.pdf').then(res => res.arrayBuffer());
+            existingPdfBytes = await fetch('Kvittomallar/Kvittomall_Tour.pdf').then(res => res.arrayBuffer());
         } else if (templetType === 'Lucia') {
-            existingPdfBytes = await fetch('Lucia_kvittomall.pdf').then(res => res.arrayBuffer());
+            existingPdfBytes = await fetch('Kvittomallar/Kvittomall_Lucia.pdf').then(res => res.arrayBuffer());
         }
         console.log(templetType);
         
