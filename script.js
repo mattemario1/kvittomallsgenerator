@@ -173,7 +173,11 @@ document.addEventListener("DOMContentLoaded", function() {
             const imgSrc = selectedImage.src;
             if (croppers[imgSrc]) {
                 const croppedCanvas = croppers[imgSrc].getCroppedCanvas();
-                croppedImageSrcs[imgSrc] = croppedCanvas.toDataURL('image/jpeg');
+                if (fileTypes[imgSrc] === 'image/jpg' || fileTypes[imgSrc] === 'image/jpeg') {
+                    croppedImageSrcs[imgSrc] = croppedCanvas.toDataURL('image/jpeg');
+                } else if (fileTypes[imgSrc] === 'image/png') {
+                    croppedImageSrcs[imgSrc] = croppedCanvas.toDataURL('image/png');
+                }
                 previewImage(croppedImageSrcs[imgSrc]);
                 croppers[imgSrc].destroy();
                 delete croppers[imgSrc];
