@@ -62,6 +62,7 @@
         <p>- Lägg till bild eller pdf med kvittot på så läggs det till i kvittomallen. <br>- Bilder kan beskäras om du trycker på den och sedan beskär. <br>- Bilder kan också sorteras genom at dra i dom i listan (Fungerar inte på touch för någon anledning).</p>
         <div class="firstButtonRow">
             <input type="file" id="imageUpload" accept=".jpg, .jpeg, .png, .pdf" multiple>
+            <button class="upload-button" onclick="document.getElementById('imageUpload').click()">Välj Bild/PDF</button>
             <button id="clearAllButton" class="clear-all-button">Ta bort alla bilder</button>
             <div class="selectTempletType">
                 <label for="templetTypeOptions">Vilken sorts kvittomall?: </label>

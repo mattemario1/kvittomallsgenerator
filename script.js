@@ -94,13 +94,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 removeButton.classList.add("remove-button");
                 removeButton.addEventListener("click", function() {
                     event.stopPropagation(); // Prevent the box from being selected when the remove button is clicked
+                    resetPreview();
                     receiptList.removeChild(boxContainer);
                 });
                 boxContainer.appendChild(removeButton);
 
                 const handle = document.createElement("div");
                 handle.classList.add("handle");
-                handle.textContent = "≡"; // Using the triple bar icon as an example
+                handle.textContent = "≡"; // Using the triple bar icon as the handle to drag
                 boxContainer.appendChild(handle);
 
                 new Sortable(receiptList, {
@@ -116,6 +117,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
             reader.readAsDataURL(file);
         });
+        this.value = ''; // Reset the input so the same file can be selected again
     });
 
 

@@ -19,8 +19,19 @@ body {
     margin: 0 auto; /* This centers the container */
 }
 
+/* Hide the actual file input */
 #imageUpload {
-    margin: 20px 0;
+    display: none;
+}
+
+/* Style the custom upload button */
+.upload-button {
+    margin: 20px;
+    padding: 10px 40px;
+    background-color: #a7059a;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
 .clear-all-button{
@@ -28,7 +39,7 @@ body {
     padding: 10px 20px;
     background-color: #ff0000;
     color: white;
-    border: none;
+    border: #ec971f;
     cursor: pointer;
 }
 
@@ -269,4 +280,16 @@ input[type=text], input[type=number], input[type=date], textarea {
     align-items: center;
     flex-direction: row;
     gap: 5px;
+    font-size: 14px;          /* Make the label text bigger */
+}
+
+/* Style the select element to make it larger */
+#templetTypeOptions {
+    font-size: 14px;          /* Increase the font size of the select */
+    padding: 10px 12px;       /* Add padding for height and width */
+    width: 100px;             /* Set a larger width */
+    height: 40px;             /* Set a fixed height */
+    border-radius: 5px;       /* Optional: rounded corners */
+    border: 1px solid #ccc;   /* Optional: add a border for style */
+    background-color: #f8f8f8;/* Optional: light background color */
 }
