@@ -324,24 +324,13 @@ document.addEventListener("DOMContentLoaded", function() {
         let clearingNrField;
         let bankNameField;
 
-        var templetType = templetTypeOptions.value;
-        if (templetType === 'Tour') {
-            nameField = form.getTextField('Text-zMjRHnxoar');
-            informationField = form.getTextField('Paragraph-z_dFCtt9FN');
-            krField = form.getTextField('Text-RMOtSe2Y51');
-            dateField = form.getTextField('Date-PNMTD3qd9s');
-            bankNrField = form.getTextField('Text-BggVTJak9r');
-            clearingNrField = form.getTextField('Text-DoHnK7gsQx');
-            bankNameField = form.getTextField('Text-_ijuoNCZ19');
-        } else {
-            nameField = form.getTextField('Text-C_2PedO18j');
-            informationField = form.getTextField('Paragraph-i8tgL7KiTn');
-            krField = form.getTextField('Text-6GJwepE8E4');
-            dateField = form.getTextField('Date-bH-N30TgnM');
-            bankNrField = form.getTextField('Text-RC50gjD5on');
-            clearingNrField = form.getTextField('Text-b_Ra7NjZUq');
-            bankNameField = form.getTextField('Text-w66Rc6XRfY');
-        }
+        nameField = form.getTextField('nameField');
+        informationField = form.getTextField('informationField');
+        krField = form.getTextField('krField');
+        dateField = form.getTextField('dateField1');
+        bankNrField = form.getTextField('bankNrField');
+        clearingNrField = form.getTextField('clearingNrField');
+        bankNameField = form.getTextField('bankNameField');
 
         nameField.setText(document.getElementById("firstName").value + ' ' + document.getElementById("surName").value);
         informationField.setText(document.getElementById("expenseInfo").value);
@@ -350,11 +339,8 @@ document.addEventListener("DOMContentLoaded", function() {
         bankNrField.setText(document.getElementById("accountNumber").value);
         clearingNrField.setText(document.getElementById("clearingNumber").value);
         bankNameField.setText(document.getElementById("bank").value);
-        // date2Field.setText('8');
-
 
         return pdfDoc;
-
     }
 
     async function createPdfWithFirstPageAndImages(pdfDoc) {

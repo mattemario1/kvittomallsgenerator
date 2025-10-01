@@ -1,0 +1,73 @@
+% Add the image to the top-left corner
+\AddToShipoutPictureBG*{%
+    \AtTextUpperLeft{%
+        \raisebox{-5cm}{\makebox[0pt][l]{\includegraphics[width=8cm]{Kvittomall_Kronharpa_Bild.png}}}
+    }%
+}
+
+% Top right text
+\begin{flushright}
+    \Large{Linköping Tekniska \\
+    Högskolas Blåscorps \\
+    LiTHe Blås}
+\end{flushright}
+
+\vspace{4cm} % Adjust vertical space to push title down
+
+\noindent\textbf{\LARGE Ansökan Om Ersättning}
+
+\vspace{0.5cm}
+
+\noindent Ansök om ersättning genom att fylla i följande mall. Skicka sedan in mallen som PDF till \\
+\href{mailto:kronharpa@litheblas.org}{\textcolor{blue}{\texttt{kronharpa@litheblas.org}}} med ämnesraden "\texttt{Ersättning}".
+
+\vspace{0.7cm}
+
+\begin{Form}
+
+% För- och Efternamn
+% Use adjustbox to vertically center the text field.
+\noindent
+\begin{tabularx}{\linewidth}{m{3.2cm} X}
+    \textbf{För- och Efternamn:} &
+    \adjustbox{valign=c}{\TextField[name=nameField, width=\linewidth, height=0.7cm, bordercolor={0.7 0.7 0.7}, backgroundcolor={0.97 0.97 0.97}]{}} \\
+\end{tabularx}
+
+\vspace{0.7cm}
+
+% Information om uppgiften
+\noindent\textbf{Information om uppgiften:} \par
+\TextField[name=informationField, width=\linewidth, height=3.5cm, multiline=true, bordercolor={0.7 0.7 0.7}, backgroundcolor={0.97 0.97 0.97}]{}
+
+\vspace{0.7cm}
+
+% Summa och Datum
+% The `adjustbox` package is used for both text fields here for consistent vertical alignment.
+\begin{tabularx}{\linewidth}{X X}
+    \textbf{Summa (SEK):} & \textbf{Datum:} \\
+    \adjustbox{valign=c}{\TextField[name=krField, width=\linewidth, height=0.7cm, bordercolor={0.7 0.7 0.7}, backgroundcolor={0.97 0.97 0.97}]{}} & \adjustbox{valign=c}{\TextField[name=dateField1, width=\linewidth, height=0.7cm, bordercolor={0.7 0.7 0.7}, backgroundcolor={0.97 0.97 0.97}]{}} \\
+\end{tabularx}
+
+\vspace{0.7cm}
+
+% Betalningsuppgifter
+\noindent\textbf{Betalningsuppgifter:} \par
+\begin{tabularx}{\linewidth}{m{3.5cm} X}
+    \textbf{Bankkontonummer:} & \adjustbox{valign=c}{\TextField[name=bankNrField, width=\linewidth, height=0.7cm, bordercolor={0.7 0.7 0.7}, backgroundcolor={0.97 0.97 0.97}]{}} \\[0.3cm]
+    \textbf{Clearingnummer:} & \adjustbox{valign=c}{\TextField[name=clearingNrField, width=\linewidth, height=0.7cm, bordercolor={0.7 0.7 0.7}, backgroundcolor={0.97 0.97 0.97}]{}} \\[0.3cm]
+    \textbf{Bank:} & \adjustbox{valign=c}{\TextField[name=bankNameField, width=\linewidth, height=0.7cm, bordercolor={0.7 0.7 0.7}, backgroundcolor={0.97 0.97 0.97}]{}} \\
+\end{tabularx}
+
+\vspace{0.7cm}
+
+% Ifylles av ekonomiska ansvariga
+\noindent\textbf{Ifylles av Kronharpa:} \par
+\begin{tabularx}{\linewidth}{m{1.2cm} X m{1.8cm} X}
+    \textbf{Datum:} & \adjustbox{valign=c}{\TextField[name=dateField2, width=\linewidth, height=1cm, bordercolor={0.7 0.7 0.7}, backgroundcolor={0.97 0.97 0.97}]{}} & \textbf{Underskrift:} & \adjustbox{valign=c}{\TextField[name=underskrift, width=\linewidth, height=1cm, bordercolor={0.7 0.7 0.7}, backgroundcolor={0.97 0.97 0.97}]{}} \\
+\end{tabularx}
+
+\end{Form}
+
+\vspace{1.0cm} % Space before the final text
+
+\noindent Till ansökan ska underlag bifogas som stödjer ansökan om ersättning. Det kan till exempel vara ett kvitto eller en betald faktura.
